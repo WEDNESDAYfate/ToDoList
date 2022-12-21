@@ -1,0 +1,32 @@
+function count(inputString,char){
+    let n=0;
+    for(let i=0;i<inputString.length;i++){
+        if(inputString[i]==char){
+            n++;
+        }
+    }
+    return n;
+}
+
+function solution(inputString) {
+    const sortedArray = inputString.split('').sort().join('');
+    const alphabests = "abcdefghijklmnopqrstuvwxyz".split('');
+    let ne = count(inputString,sortedArray[0]);
+
+    for(let i=0;i<sortedArray.length;i++){
+        if(sortedArray[i]!=alphabests[i]){
+
+            return false;
+
+        }
+        if(i==0){
+            ne = count(inputString,sortedArray[0]);
+        }
+        if(ne<count(inputString,sortedArray[i])) {
+            return false;
+        }else{
+            ne = count(inputString,sortedArray[i]);
+        }
+    }
+    return true;
+}

@@ -1,0 +1,143 @@
+* {
+box-sizing: border-box;
+}
+
+.search-bar {
+font-family: sans-serif;
+margin: 15px;
+width: 300px;
+position: relative;
+
+.search-bar__input {
+width: 100%;
+padding: 15px;
+font-size: 1.3em;
+}
+
+.search-bar__autocomplete-container {
+border: 1px solid black;
+width: 100%;
+position: absolute;
+background-color: #fff;
+
+.search-bar__autocomplete-item {
+padding: 10px;
+
+&:hover {
+background-color: #66f;
+cursor: pointer;
+user-select: none;
+}
+}
+}
+}
+
+
+
+
+=html-
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js"></script>
+</head>
+
+<body class="main">
+  <div id="app"></div>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+-js-
+// --------------- API:BEGIN --------------
+
+faker.seed(42);
+
+const users = Array.from({ length: 100 }).map(() => ({
+name: faker.name.findName(),
+email: faker.internet.email(),
+}));
+
+const fuse = new Fuse(users, {
+shouldSort: true,
+threshold: 0.6,
+location: 0,
+distance: 100,
+maxPatternLength: 32,
+minMatchCharLength: 1,
+keys: ['name'],
+});
+
+/**
+* Search users by name
+* @param {string} query - The query to search users by
+* @return {Promise<{ name: string; email: string; }[]>} Search result
+  */
+  const searchUsersByName = (query) => new Promise((resolve) => resolve(fuse.search(query)));
+
+  // ---------------- API:END ---------------
+
+  const App = () => {
+  const [searchusers,setSearchUsers]=React.useState([]);
+  const [selectedUser,setSelectedUser] = React.useState("");
+  const handleSearhUser= async (q)=>{
+
+  const result = await searchUsersByName(q);
+  console.log(result);
+  setSearchUsers(result);
+  }
+  const handleSelectUser=(name)=>{
+  console.log(name);
+  setSelectedUser(name);
+  setSearchUsers([]);
+  }
+  return (
+  <div className="search-bar">
+    <h1 className="search-bar__title">Search Users</h1>
+    <input className="search-bar__input" type="text" value={selectedUser} onChange={(e)=>{
+    setSelectedUser(e.target.value);
+    handleSearhUser(e.target.value);}}
+    />
+    <div className="search-bar__autocomplete-container" />
+    {searchusers.map((u,i)=>
+    <Item key={u.name+i} handleSelectUser={handleSelectUser} user={u} />)}
+  </div>
+  );
+  };
+
+  const Item = ({user,handleSelectUser}) => (
+  <div role="button" className="search-bar__autocomplete-item" onClick={()=>handleSelectUser(user.name)}
+    >
+    {user.name}
+  </div>
+  );
+
+
+  ReactDOM.render(
+  <App />,
+  document.getElementById('app')
+  );
+
+
+
+
+  ---------------------------------------------
+
+  function count(inputString,char){
+  let n=0;
+  for(let i=0;i<inputString.length;i++){ if(inputString[i]==char){ n++; } } return n; } function solution(inputString) {
+    const sortedArray=inputString.split('').sort().join(''); const alphabests="abcdefghijklmnopqrstuvwxyz" .split('');
+    let ne=count(inputString,sortedArray[0]); for(let i=0;i<sortedArray.length;i++){ if(sortedArray[i]!=alphabests[i]){
+    return false; } if(i==0){ ne=count(inputString,sortedArray[0]); } if(ne<count(inputString,sortedArray[i])) { return
+    false; }else{ ne=count(inputString,sortedArray[i]); } } return true; } // bodlogo 1
