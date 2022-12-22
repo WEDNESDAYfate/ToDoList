@@ -1,0 +1,18 @@
+function sayHi(fullName, callback) {
+    console.log(`Hi, ${fullName}!`);
+if(typeof callback === 'function'){
+    callback();
+}
+}
+
+function sayBye(fullName, callback){
+    console.log(`Bye, ${fullName}!`);
+    callback();
+}
+
+function printMessage(firstName, lastname, callback){
+    const fullName = `${firstName}${lastname}`;
+    if(typeof callback === 'function'){
+        callback(fullName);
+    }
+}
